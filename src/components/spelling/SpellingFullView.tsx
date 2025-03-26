@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import SpellingProgress from './SpellingProgress';
 import { Word } from '@/types/word';
-import { Volume2, RefreshCw } from 'lucide-react';
+import { Volume2, RefreshCw, Headphones } from 'lucide-react';
 import MiniRecorder from './audio/MiniRecorder';
 import { toast } from 'sonner';
 
@@ -176,35 +176,34 @@ const SpellingFullView = ({
   };
   
   return (
-    <div className="flex flex-col items-center w-full space-y-6">
+    <div className="flex flex-col items-center w-full space-y-4">
       <div className="w-full flex items-center justify-center relative">
-        <div className={`text-3xl font-bold text-center p-8 bg-white/70 backdrop-blur-sm rounded-xl shadow-inner transform hover:scale-105 transition-all duration-300 min-w-[80%] 
+        <div className={`text-2xl font-bold text-center p-6 bg-gradient-to-br from-blue-50 to-indigo-50 backdrop-blur-sm rounded-xl shadow-inner border border-blue-100 transform transition-all duration-300 min-w-[80%] 
           ${isRTL ? 'rtl font-urdu kid-friendly' : ''}`}>
           {word.text}
-          <div className="text-xs text-gray-500 mt-2">ID: {word.id}</div>
         </div>
       </div>
       
-      <div className="flex flex-col items-center justify-center gap-4 w-full max-w-md">
-        <div className="flex items-center justify-center gap-4">
+      <div className="flex items-center justify-center gap-3 w-full">
+        <div className="flex items-center justify-center gap-2 bg-white/80 rounded-full px-3 py-1.5 shadow-sm border border-blue-100">
           <Button 
             onClick={handlePlayPronunciation} 
-            variant="outline" 
-            size="icon"
-            className={`bg-white/70 hover:bg-white/90 transition-all ${isPlaying ? 'bg-purple-100' : ''}`}
+            variant="ghost" 
+            size="sm"
+            className={`h-7 w-7 p-0 rounded-full bg-blue-500 hover:bg-blue-600 text-white transition-all ${isPlaying ? 'animate-pulse' : ''}`}
             disabled={isPlaying}
           >
-            <Volume2 className={`h-5 w-5 ${isPlaying ? 'animate-pulse text-purple-600' : ''}`} />
+            <Headphones className="h-3.5 w-3.5" />
           </Button>
           
           {isRTL && !hasRecording && (
-            <div className="flex flex-col items-center">
+            <div className="flex items-center">
               <MiniRecorder 
                 wordId={word.id}
                 onRecordingComplete={handleRecordingComplete}
                 language={word.language}
                 flashEmptyIndicator={true}
-                className="scale-125 animate-pulse"
+                className="scale-110 animate-pulse"
               />
             </div>
           )}
@@ -220,13 +219,13 @@ const SpellingFullView = ({
           
           {hasRecording && (
             <Button
-              variant="outline"
-              size="icon"
+              variant="ghost"
+              size="sm"
               onClick={handleResetRecording}
-              className="text-red-500 hover:bg-red-50 h-7 w-7"
+              className="text-red-500 hover:bg-red-50 h-6 w-6 p-0 rounded-full"
               title={`Reset recording for word ID: ${word.id}`}
             >
-              <RefreshCw className="h-4 w-4" />
+              <RefreshCw className="h-3 w-3" />
             </Button>
           )}
         </div>

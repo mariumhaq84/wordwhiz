@@ -1,25 +1,23 @@
-
-import { toast } from 'sonner';
-
 export const useToastNotifications = () => {
+  // Empty functions that can be called without causing errors
   const showCorrectAnswerToast = () => {
-    toast.success("Excellent! You spelled it correctly! Moving to the next word.");
+    // Toast notification removed
   };
 
   const showIncorrectAnswerToast = () => {
-    toast.error("Not quite right. Let's try again. Watch the word carefully.");
+    // Toast notification removed
   };
 
   const showCorrectBlanksToast = () => {
-    toast.success("Great job! You filled in the blanks correctly! Moving to typing stage.");
+    // Toast notification removed
   };
 
   const showIncorrectBlanksToast = () => {
-    toast.error("Not quite right. Let's try again with the blanks.");
+    // Toast notification removed
   };
 
   const showTimeExpiredToast = () => {
-    toast.error("Oopsie! Time's up! Let's try again! You can do it! 🌟");
+    // Toast notification removed
   };
 
   return {

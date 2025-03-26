@@ -1,10 +1,8 @@
-
 import React, { useEffect, useRef, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import SpellingPractice from '@/components/spelling/SpellingPractice';
 import { ArrowLeft } from 'lucide-react';
 import { WordList } from '@/types/word';
-import { toast } from 'sonner';
 
 interface PracticeViewProps {
   currentList: WordList;
@@ -124,7 +122,7 @@ const PracticeView = ({
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="flex justify-between items-center mb-4">
         <Button 
           variant="outline" 

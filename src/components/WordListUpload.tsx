@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Language, WordList } from '@/types/word';
-import { useToast } from "@/components/ui/use-toast";
 import { IceCream, Sparkles } from 'lucide-react';
 
 interface WordListUploadProps {
@@ -12,7 +11,6 @@ interface WordListUploadProps {
 
 const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploadProps) => {
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
 
   // Predefined English spelling words from the Spellathon 2024-2025 Class 3 image
   const predefinedEnglishWords = [
@@ -48,17 +46,8 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploa
       };
 
       onUpload(wordList);
-      
-      toast({
-        title: "Success",
-        description: `English word list loaded successfully with ${words.length} words!`,
-      });
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load predefined English word list",
-        variant: "destructive",
-      });
+      console.error("Failed to load predefined English word list", error);
     } finally {
       setLoading(false);
     }

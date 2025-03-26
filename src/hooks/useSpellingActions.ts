@@ -1,9 +1,7 @@
-
 import { WordList, Language } from '@/types/word';
 import { WordAttempt, SessionResult, SpellingSessionState } from '@/types/session';
 import { prioritizeWeakWords } from '@/utils/wordPriority';
 import { saveSessionResults } from '@/utils/sessionStorage';
-import { useToast } from './use-toast';
 
 export function useSpellingActions(
   state: SpellingSessionState, 
@@ -19,8 +17,6 @@ export function useSpellingActions(
     setWordAttempts: React.Dispatch<React.SetStateAction<Map<number, WordAttempt>>>;
   }
 ) {
-  const { toast } = useToast();
-  
   const handleLanguageSelect = (language: Language) => {
     setState.setSelectedLanguage(language);
     setState.setWordLists([]);
@@ -100,31 +96,47 @@ export function useSpellingActions(
     }
   };
 
-  const finishSession = (completed: boolean) => {
+  const finishSession = (completed: boolean = true) => {
     if (!state.currentList) return;
     
+    // Calculate final score
+    let totalScore = 0;
+    let totalWords = 0;
+    let mistakeWords: string[] = [];
+    
+    state.wordAttempts.forEach((attempt, index) => {
+      if (attempt.completed) {
+        const word = state.currentList?.words[index];
+        // Use the attempts and penalty to calculate a score if score property doesn't exist
+        const attemptScore = 1 - (attempt.penalty || 0);
+        totalScore += attemptScore;
+        totalWords++;
+        
+        if (attemptScore < 1) {
+          mistakeWords.push(word.text);
+        }
+      }
+    });
+    
+    // Create session result
     const newResult: SessionResult = {
       id: Date.now().toString(),
       date: new Date(),
-      score: state.currentScore,
-      totalQuestions: completed ? state.currentList.words.length : state.currentWordIndex + 1,
-      wordList: state.currentList.name,
-      mistakeWords: [...state.mistakeWords],
+      score: totalScore,
+      totalQuestions: totalWords,
+      wordList: state.currentList.name, 
+      mistakeWords,
       completed
     };
     
+    // Update session results
     setState.setSessionResults(prev => {
-      const updatedResults = [newResult, ...prev];
-      saveSessionResults(updatedResults);
-      return updatedResults;
+      const updated = [...prev, newResult];
+      saveSessionResults(updated);
+      return updated;
     });
     
     const completionRate = Math.round((newResult.score / newResult.totalQuestions) * 100);
-    
-    toast({
-      title: completed ? "Session Completed! 🎉" : "Session Ended",
-      description: `You scored ${newResult.score.toFixed(1)} out of ${newResult.totalQuestions} (${completionRate}%)`,
-    });
     
     setState.setShowDashboard(true);
     setState.setCurrentList(null);
@@ -151,12 +163,6 @@ export function useSpellingActions(
         });
         return newMap;
       });
-      
-      toast({
-        title: "Word Skipped",
-        description: "A penalty will be applied when you return to this word.",
-        variant: "default",
-      });
     }
     
     if (direction === 'next' && state.currentWordIndex < state.currentList.words.length - 1) {
@@ -176,10 +182,6 @@ export function useSpellingActions(
   const handleClearHistory = () => {
     setState.setSessionResults([]);
     localStorage.removeItem('spellingWizResults');
-    toast({
-      title: "History Cleared",
-      description: "Your practice history has been reset.",
-    });
   };
 
   return {

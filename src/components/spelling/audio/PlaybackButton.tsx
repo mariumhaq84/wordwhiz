@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Play, RefreshCw, Check, X, Circle } from 'lucide-react';
@@ -29,43 +28,27 @@ const PlaybackButton: React.FC<PlaybackButtonProps> = ({
   flashEmpty = false,
   wordId
 }) => {
-  if (!audioURL && !flashEmpty) return null;
+  // Debug information to help track recording issues
+  const debugInfo = wordId ? `(Word ID: ${wordId})` : '';
   
-  // Debug display for finding recording issues
-  const debugInfo = wordId ? `Audio for word ID: ${wordId}` : 'No word ID provided';
-  
-  // Render the flashing mic indicator when no recording exists
-  if (flashEmpty && !audioURL) {
+  // For compact mode (used in the word list view)
+  if (compactMode) {
     return (
       <div className="flex items-center gap-1">
         <Button
           variant="ghost"
           size="icon"
-          disabled={true}
-          className="text-amber-500 hover:bg-amber-50 animate-pulse h-7 w-7"
-          title={debugInfo}
+          onClick={onPlayAudio}
+          disabled={playingAudio}
+          className={`h-7 w-7 ${flashEmpty ? 'animate-pulse bg-amber-50' : ''}`}
+          title={`Play recording ${debugInfo}`}
         >
-          <Circle className="h-3 w-3 animate-pulse" />
-        </Button>
-      </div>
-    );
-  }
-  
-  if (compactMode) {
-    return (
-      <div className="flex items-center gap-1">
-        {audioURL && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onPlayAudio}
-            disabled={playingAudio}
-            className="text-green-600 hover:text-green-800 hover:bg-green-50 h-7 w-7 animate-in fade-in duration-300"
-            title={`Play recording ${debugInfo}`}
-          >
+          {audioURL ? (
             <Play className="h-4 w-4" />
-          </Button>
-        )}
+          ) : (
+            <Circle className="h-4 w-4 text-gray-400" />
+          )}
+        </Button>
         
         {showDiscardOptions ? (
           <>
@@ -82,7 +65,7 @@ const PlaybackButton: React.FC<PlaybackButtonProps> = ({
               variant="ghost"
               size="icon"
               onClick={onDiscard}
-              className="text-red-600 hover:text-red-800 hover:bg-red-50 h-7 w-7 animate-in slide-in-from-right duration-300"
+              className="h-7 w-7 rounded-full bg-red-100 flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-200 transition-colors animate-in slide-in-from-right duration-300"
               title="Discard recording"
             >
               <X className="h-4 w-4" />
@@ -134,7 +117,7 @@ const PlaybackButton: React.FC<PlaybackButtonProps> = ({
             variant="outline"
             size="icon"
             onClick={onDiscard}
-            className="text-red-600 border-red-200 hover:bg-red-50 h-10 w-10 animate-in slide-in-from-right duration-300"
+            className="h-10 w-10 rounded-full bg-red-100 shadow-md flex items-center justify-center text-red-500 hover:text-red-700 hover:bg-red-200 transition-colors animate-in slide-in-from-right duration-300"
             title="Discard recording"
           >
             <X className="h-5 w-5" />

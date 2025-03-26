@@ -1,10 +1,48 @@
-# Welcome to your Lovable project
+# Word Whiz Kid - Spelling Practice Application
 
-## Project info
+## Project Overview
+
+Word Whiz Kid is an interactive spelling practice application designed for elementary school children. The application provides a fun and engaging way for kids to practice and improve their spelling skills through various activities and exercises.
+
+## Recent Modifications
+
+### UI Simplifications
+- Removed language selection tabs to focus solely on English word lists
+- Removed alert messages for a cleaner interface
+- Added a kid-friendly spelling word grid with colorful styling
+- Simplified navigation with concise button labels
+
+### Features
+- Interactive spelling practice with audio support
+- Kid-friendly UI with colorful elements and playful animations
+- Predefined word lists for Spellathon 2024-2025 Class 3
+- Progress tracking and performance feedback
+- Audio recording functionality for pronunciation practice
+
+## Getting Started
+
+```sh
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
+```
+
+## Technologies Used
+- React
+- TypeScript
+- Tailwind CSS
+- Lucide React for icons
+- HTML5 Audio API for recording functionality
+
+## Original Project
+
+This project was originally created with Lovable. The original project information is below:
 
 **URL**: https://lovable.dev/projects/40af0c31-ef4e-42f2-bf65-4855796280aa
 
-## How can I edit this code?
+## How to Edit This Code
 
 There are several ways of editing your application.
 
@@ -49,16 +87,6 @@ npm run dev
 - Select the "Codespaces" tab.
 - Click on "New codespace" to launch a new Codespace environment.
 - Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
 
 ## How can I deploy this project?
 

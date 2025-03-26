@@ -1,8 +1,8 @@
-
 import React, { KeyboardEvent, RefObject, useEffect, useState } from 'react';
 import SpellingProgress from './SpellingProgress';
 import { Word } from '@/types/word';
 import InputForm from './components/InputForm';
+import { Pencil } from 'lucide-react';
 
 interface SpellingInputViewProps {
   word: Word;
@@ -42,23 +42,28 @@ const SpellingInputView = ({
   }, [isRTL, word.text]);
 
   return (
-    <div className="space-y-6">
-      <div className={`text-center mb-2 ${isRTL ? 'text-emerald-700 font-urdu text-xl' : 'text-emerald-700 font-medium'}`}>
-        {isRTL ? "پورا لفظ ٹائپ کریں!" : "Type the whole word!"}
+    <div className="space-y-4">
+      <div className="flex items-center justify-center gap-2 bg-white/80 rounded-full px-3 py-1.5 shadow-sm border border-emerald-100 mx-auto w-fit">
+        <Pencil className="h-4 w-4 text-emerald-500" />
+        <div className={`text-sm font-medium ${isRTL ? 'font-urdu' : ''} text-emerald-700`}>
+          {isRTL ? "پورا لفظ ٹائپ کریں!" : "Type the whole word!"}
+        </div>
       </div>
       
-      <InputForm
-        word={word}
-        letterAttempts={letterAttempts}
-        letterInputRefs={letterInputRefs}
-        isCorrect={isCorrect}
-        handleLetterChange={handleLetterChange}
-        handleLetterKeyDown={handleLetterKeyDown}
-        checkSpellingAttempt={checkSpellingAttempt}
-        autoCheck={autoCheck}
-        setAutoCheck={setAutoCheck}
-        colorScheme="green"
-      />
+      <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-4 shadow-inner border border-emerald-100">
+        <InputForm
+          word={word}
+          letterAttempts={letterAttempts}
+          letterInputRefs={letterInputRefs}
+          isCorrect={isCorrect}
+          handleLetterChange={handleLetterChange}
+          handleLetterKeyDown={handleLetterKeyDown}
+          checkSpellingAttempt={checkSpellingAttempt}
+          autoCheck={autoCheck}
+          setAutoCheck={setAutoCheck}
+          colorScheme="green"
+        />
+      </div>
       
       <SpellingProgress 
         timeRemaining={timeRemaining}

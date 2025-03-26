@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Camera } from "lucide-react";
 import * as htmlToImage from 'html-to-image';
-import { useToast } from "@/components/ui/use-toast";
 
 interface ScreenshotButtonProps {
   elementId: string;
@@ -11,8 +9,6 @@ interface ScreenshotButtonProps {
 }
 
 const ScreenshotButton = ({ elementId, filename = 'word-list' }: ScreenshotButtonProps) => {
-  const { toast } = useToast();
-
   const takeScreenshot = async () => {
     try {
       const element = document.getElementById(elementId);
@@ -26,17 +22,11 @@ const ScreenshotButton = ({ elementId, filename = 'word-list' }: ScreenshotButto
       link.download = `${filename}.png`;
       link.href = dataUrl;
       link.click();
-
-      toast({
-        title: "Screenshot saved!",
-        description: "Your word list has been captured and downloaded.",
-      });
+      
+      // Success message removed
     } catch (error) {
-      toast({
-        title: "Screenshot failed",
-        description: "Failed to capture screenshot. Please try again.",
-        variant: "destructive",
-      });
+      console.error("Failed to capture screenshot", error);
+      // Error toast removed
     }
   };
 
