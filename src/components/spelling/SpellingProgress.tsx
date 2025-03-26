@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Progress } from "@/components/ui/progress";
-import { Timer, AlertCircle, Star, Sparkles } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 interface SpellingProgressProps {
   timeRemaining: number;
@@ -14,8 +13,6 @@ const SpellingProgress = ({ timeRemaining, showWarning }: SpellingProgressProps)
   
   // Detect word changes that cause timer jumps
   useEffect(() => {
-    // If time jumps by more than 5 seconds, it's likely a word change
-    // Briefly disable animations to prevent visual glitches
     if (Math.abs(prevTimeRef.current - timeRemaining) > 5) {
       animationEnabledRef.current = false;
       const timer = setTimeout(() => {
@@ -26,61 +23,71 @@ const SpellingProgress = ({ timeRemaining, showWarning }: SpellingProgressProps)
     prevTimeRef.current = timeRemaining;
   }, [timeRemaining]);
 
-  const getTimerFace = () => {
-    if (timeRemaining <= 5) return '😮';
-    if (timeRemaining <= 15) return '😃';
-    return '😎';
+  // Calculate progress percentage (30 seconds total)
+  const progressPercentage = Math.max((timeRemaining / 30) * 100, 0);
+  
+  // Get emoji based on time remaining
+  const getEmoji = () => {
+    if (timeRemaining <= 5) return '🚀';
+    if (timeRemaining <= 10) return '⏱️';
+    if (timeRemaining <= 20) return '🌟';
+    return '✨';
   };
 
+  // Get color scheme based on time remaining
+  const getColorScheme = () => {
+    if (timeRemaining <= 5) {
+      return {
+        bg: 'bg-pink-100',
+        text: 'text-pink-500',
+        progress: '#FE4A75',
+        border: 'border-pink-200'
+      };
+    } else if (timeRemaining <= 15) {
+      return {
+        bg: 'bg-amber-100',
+        text: 'text-amber-500',
+        progress: '#F59E0B',
+        border: 'border-amber-200'
+      };
+    } else {
+      return {
+        bg: 'bg-emerald-100',
+        text: 'text-emerald-500',
+        progress: '#10B981',
+        border: 'border-emerald-200'
+      };
+    }
+  };
+
+  const colors = getColorScheme();
+
   return (
-    <div className="space-y-1.5">
-      {/* Fixed-width container that never changes size */}
-      <div className="relative w-full h-6 rounded-full overflow-hidden shadow-sm">
-        {/* Dynamic progress bar that changes color based on time */}
+    <div className="flex items-center justify-center mt-3 gap-2 max-w-xs mx-auto">
+      {/* Compact timer with integrated progress */}
+      <div className={`relative flex items-center gap-1.5 ${colors.bg} rounded-full px-4 py-1.5 shadow-md ${colors.border} border-2`}>
+        {/* Progress bar underneath */}
         <div 
-          className="absolute inset-0 w-full h-full transition-colors duration-300 rounded-full bg-gradient-to-r"
+          className="absolute left-0 top-0 bottom-0 rounded-full opacity-40 transition-all duration-300"
           style={{
-            backgroundImage: timeRemaining <= 5 
-              ? 'linear-gradient(to right, #FDF2F8, #FCE7F3)' 
-              : timeRemaining <= 15 
-                ? 'linear-gradient(to right, #FFFBEB, #FEF3C7)' 
-                : 'linear-gradient(to right, #ECFDF5, #D1FAE5)'
-          }}>
-        </div>
+            width: `${progressPercentage}%`,
+            backgroundColor: colors.progress,
+            zIndex: 0
+          }}
+        />
         
-        {/* Stars that float up as time passes (decorative) */}
-        {timeRemaining <= 20 && timeRemaining > 15 && (
-          <Star className="absolute top-0.5 right-1/4 w-4 h-4 text-yellow-300 animate-float" />
-        )}
-        {timeRemaining <= 15 && timeRemaining > 10 && (
-          <Star className="absolute top-0.5 right-1/3 w-4 h-4 text-yellow-400 animate-float" style={{animationDelay: '0.3s'}} />
-        )}
-        {timeRemaining <= 10 && timeRemaining > 5 && (
-          <Sparkles className="absolute top-0.5 right-1/2 w-4 h-4 text-amber-400 animate-float" style={{animationDelay: '0.5s'}} />
-        )}
-      </div>
-      
-      <div className="flex justify-between items-center px-1">
-        <div className="text-center text-xs font-medium text-gray-700 flex items-center gap-1.5">
-          <div className={`flex items-center justify-center w-6 h-6 rounded-full ${timeRemaining <= 5 ? 'bg-pink-200' : timeRemaining <= 15 ? 'bg-amber-200' : 'bg-emerald-100'} transition-colors duration-300`}>
-            {timeRemaining <= 10 ? (
-              <Sparkles className={`h-3.5 w-3.5 ${timeRemaining <= 5 ? "text-pink-500" : "text-amber-500"}`} />
-            ) : (
-              <Timer className="h-3.5 w-3.5 text-emerald-500" />
-            )}
-          </div>
-          <div className="flex items-center">
-            <span className={`text-base font-bold ${timeRemaining <= 5 ? "text-pink-500" : timeRemaining <= 15 ? "text-amber-500" : "text-emerald-500"} transition-colors duration-300`}>
-              {timeRemaining}
-            </span>
-            <span className="ml-1 text-gray-600 text-xs"> sec {getTimerFace()}</span>
-          </div>
+        {/* Timer content */}
+        <div className="flex items-center gap-2 z-10">
+          <span className={`text-lg font-bold ${colors.text}`}>{timeRemaining}</span>
+          <span className="text-base">{getEmoji()}</span>
         </div>
-        
-        {showWarning && (
-          <div className="text-pink-500 text-xs font-bold flex items-center gap-1 bg-pink-100 px-2 py-0.5 rounded-full shadow-sm animate-bounce">
-            <AlertCircle className="h-3 w-3" /> Hurry!
-          </div>
+
+        {/* Decorative elements */}
+        {timeRemaining > 20 && (
+          <Star className="absolute -top-1 -right-1 h-3 w-3 text-yellow-400 animate-pulse" />
+        )}
+        {timeRemaining > 15 && (
+          <Star className="absolute -bottom-1 -right-1 h-3 w-3 text-yellow-400 animate-pulse" style={{animationDelay: '0.5s'}} />
         )}
       </div>
     </div>
