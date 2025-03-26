@@ -9,7 +9,7 @@ interface WordListUploadProps {
   defaultLanguage?: Language;
 }
 
-const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadProps) => {
+const WordListUpload = ({ onUpload, defaultLanguage = 'arabic' }: WordListUploadProps) => {
   const [loading, setLoading] = useState(false);
   const [selectedLanguage] = useState<Language>(defaultLanguage);
 
@@ -42,14 +42,36 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadPr
     "میدان", "درہم", "برداشت"
   ];
 
+  // Predefined Arabic spelling words
+  const predefinedArabicWords = [
+    "فأر", "رسالة", "نهر", "خشب",
+    "بيوت", "أصوات", "بندق", "جوز",
+    "الناس", "تسير السيارة", "ينظف", "يكنس",
+    "يتعب", "يقفز", "الفلاح", "يضرب",
+    "قوي", "أسنان", "نعامة", "يخرج",
+    "يزار", "يخفي", "لامعة", "يدفن",
+    "يحكم", "السجن", "صحراء", "تسافر",
+    "القاضي", "يظهر", "أجزاء", "عجلات",
+    "المطاط", "محطة", "علم", "إسعاف",
+    "مطافئ", "البضائع", "اخترع", "أسهل",
+    "يستريح", "طريق", "النهر", "القطار",
+    "كتف", "الخشبة", "بعض", "آخر",
+    "لا شيء", "يفهم"
+  ];
+
   const handleLoadPredefinedList = () => {
     setLoading(true);
     
     try {
       // Select the appropriate word list based on language
-      const wordList = selectedLanguage === 'urdu' 
-        ? predefinedUrduWords 
-        : predefinedEnglishWords;
+      let wordList;
+      if (selectedLanguage === 'urdu') {
+        wordList = predefinedUrduWords;
+      } else if (selectedLanguage === 'arabic') {
+        wordList = predefinedArabicWords;
+      } else {
+        wordList = predefinedEnglishWords;
+      }
       
       // Create word list with predefined words and shuffle them
       const shuffledWords = [...wordList].sort(() => Math.random() - 0.5);
@@ -63,7 +85,11 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadPr
 
       const wordListObj: WordList = {
         id: Date.now().toString(),
-        name: selectedLanguage === 'urdu' ? "Urdu Spelling Practice" : "English Spelling Practice",
+        name: selectedLanguage === 'arabic' 
+          ? "تدريب الإملاء العربية" 
+          : selectedLanguage === 'urdu' 
+            ? "اردو املا کی مشق" 
+            : "English Spelling Practice",
         language: selectedLanguage,
         words,
       };
@@ -83,12 +109,19 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadPr
   ];
 
   // Get the current word list based on selected language
-  const currentWordList = selectedLanguage === 'urdu' ? predefinedUrduWords : predefinedEnglishWords;
+  let currentWordList;
+  if (selectedLanguage === 'urdu') {
+    currentWordList = predefinedUrduWords;
+  } else if (selectedLanguage === 'arabic') {
+    currentWordList = predefinedArabicWords;
+  } else {
+    currentWordList = predefinedEnglishWords;
+  }
 
   return (
     <Card className="p-3 max-w-md mx-auto bg-white/90 backdrop-blur shadow-xl rounded-2xl">
-      <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent text-center font-urdu">
-        ہجے کی مشق شروع کریں!
+      <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent text-center font-arabic">
+        تدريب الإملاء العربية
       </h2>
 
       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
@@ -101,9 +134,12 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadPr
                   className={`p-2 ${kidFriendlyColors[index % kidFriendlyColors.length]} 
                     flex items-center justify-center text-center rounded-md 
                     border border-blue-100 hover:scale-105 transition-transform duration-200
-                    ${selectedLanguage === 'urdu' ? 'font-urdu-container' : ''}`}
+                    ${selectedLanguage === 'arabic' ? 'font-arabic-container' : 
+                      selectedLanguage === 'urdu' ? 'font-urdu-container' : ''}`}
                 >
-                  <span className={`text-blue-900 text-sm font-medium kid-friendly ${selectedLanguage === 'urdu' ? 'font-urdu' : ''}`}>
+                  <span className={`text-blue-900 text-sm font-medium kid-friendly 
+                    ${selectedLanguage === 'arabic' ? 'font-arabic' : 
+                      selectedLanguage === 'urdu' ? 'font-urdu' : ''}`}>
                     {word}
                   </span>
                 </div>
@@ -118,7 +154,7 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadPr
           disabled={loading}
         >
           <IceCream className="h-5 w-5" />
-          {loading ? "لوڈ ہو رہا ہے..." : "آئیے مشق شروع کریں!"}
+          {loading ? "جاري التحميل..." : "لنبدأ التدريب!"}
         </Button>
       </div>
     </Card>
