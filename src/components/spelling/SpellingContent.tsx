@@ -1,5 +1,5 @@
 import React from 'react';
-import SpellingFullView from './SpellingFullView';
+import SpellingMemorizeView from './SpellingMemorizeView';
 import SpellingPartialView from './SpellingPartialView';
 import SpellingInputView from './SpellingInputView';
 import SpellingCorrectAlert from './SpellingCorrectAlert';
@@ -43,9 +43,8 @@ const SpellingContent = () => {
 
       <div className={`bg-gradient-to-br ${getStageGradient()} rounded-xl p-4 shadow-inner border border-white`}>
         {displayMode === 'full' && (
-          <SpellingFullView 
+          <SpellingMemorizeView 
             word={word}
-            playPronunciation={playPronunciation}
             timeRemaining={timeRemaining}
             showWarning={showWarning}
           />
