@@ -67,14 +67,6 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploa
 
       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
         <div className="mb-3">
-          <h3 className="text-center text-blue-700 font-semibold mb-2 flex items-center justify-center gap-1">
-            <Sparkles className="h-4 w-4 text-yellow-500" />
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              Spellathon 2024-2025 Class 3
-            </span>
-            <Sparkles className="h-4 w-4 text-yellow-500" />
-          </h3>
-          
           <div className="rounded-lg border-2 border-blue-300 overflow-hidden shadow-md">
             <div className="grid grid-cols-4 gap-[2px] bg-blue-200 p-[2px] rounded-md">
               {predefinedEnglishWords.map((word, index) => (
