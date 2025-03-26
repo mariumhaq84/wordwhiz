@@ -130,7 +130,7 @@ const PracticeView = ({
           className="bg-white hover:bg-blue-50 shadow-sm"
         >
           <ArrowLeft className="mr-1" size={16} />
-          Back to Word List
+          Word List
         </Button>
         <h2 className="text-xl font-semibold text-center">
           {currentList?.name}
