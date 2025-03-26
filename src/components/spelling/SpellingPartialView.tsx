@@ -103,7 +103,7 @@ const SpellingPartialView = ({
       />
       
       {/* Add incorrect attempt animation */}
-      <IncorrectAttemptAnimation isRTL={isRTL} />
+      <IncorrectAttemptAnimation isRTL={isRTL} language={word.language} />
     </div>
   );
 };
