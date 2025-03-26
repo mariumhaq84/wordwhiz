@@ -1,0 +1,202 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-celebration {
+    animation: celebration 0.5s ease-out forwards;
+  }
+  
+  .animate-bounce-once {
+    animation: bounce-in-out 2s ease-in-out forwards;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  @keyframes celebration {
+    0% {
+      opacity: 0;
+      transform: scale(0.7);
+    }
+    70% {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes bounce-in-out {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) translateY(10px);
+    }
+    20% {
+      opacity: 1;
+      transform: scale(1.05) translateY(-5px);
+    }
+    40% {
+      transform: scale(1) translateY(0);
+    }
+    80% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+  }
+  
+  .keyboard-animate-in {
+    animation: keyboard-slide-up 0.3s ease-out forwards;
+  }
+  
+  @keyframes keyboard-slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-wiggle {
+    animation: wiggle 2s ease-in-out infinite;
+  }
+  
+  @keyframes wiggle {
+    0%, 100% {
+      transform: rotate(-3deg);
+    }
+    50% {
+      transform: rotate(3deg);
+    }
+  }
+  
+  .animate-pop {
+    animation: pop 0.5s ease-out;
+  }
+  
+  @keyframes pop {
+    0% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  /* Bubble animation */
+  .animate-bubble {
+    animation: bubble 4s ease-in-out infinite;
+  }
+  
+  @keyframes bubble {
+    0%, 100% {
+      transform: translateY(0) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-15px) rotate(5deg);
+    }
+    50% {
+      transform: translateY(0) rotate(0deg);
+    }
+    75% {
+      transform: translateY(-7px) rotate(-5deg);
+    }
+  }
+  
+  /* Jump animation */
+  .animate-jump {
+    animation: jump 2s ease-in-out infinite;
+  }
+  
+  @keyframes jump {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+  
+  /* Soft pulses */
+  .animate-soft-pulse {
+    animation: soft-pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes soft-pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
+
+/* Add Urdu font support */
+@font-face {
+  font-family: 'Noto Nastaliq Urdu';
+  src: url('https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&display=swap');
+}
+
+/* Add Comic Sans or other kid-friendly font */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+
+.font-urdu {
+  font-family: 'Noto Nastaliq Urdu', serif;
+}
+
+.font-comic {
+  font-family: 'Comic Neue', 'Bubblegum Sans', cursive;
+}
+
+.kid-friendly {
+  font-family: 'Bubblegum Sans', 'Comic Neue', cursive;
+}
+
+/* Add a playful background pattern */
+body {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Add a rainbow border */
+.rainbow-border {
+  border-width: 4px;
+  border-style: solid;
+  border-image: linear-gradient(to right, violet, indigo, blue, green, yellow, orange, red) 1;
+  animation: rainbow-border 6s linear infinite;
+}
+
+@keyframes rainbow-border {
+  0% { border-image: linear-gradient(to right, violet, indigo, blue, green, yellow, orange, red) 1; }
+  16.6% { border-image: linear-gradient(to right, red, violet, indigo, blue, green, yellow, orange) 1; }
+  33.3% { border-image: linear-gradient(to right, orange, red, violet, indigo, blue, green, yellow) 1; }
+  50% { border-image: linear-gradient(to right, yellow, orange, red, violet, indigo, blue, green) 1; }
+  66.6% { border-image: linear-gradient(to right, green, yellow, orange, red, violet, indigo, blue) 1; }
+  83.3% { border-image: linear-gradient(to right, blue, green, yellow, orange, red, violet, indigo) 1; }
+  100% { border-image: linear-gradient(to right, indigo, blue, green, yellow, orange, red, violet) 1; }
+}
