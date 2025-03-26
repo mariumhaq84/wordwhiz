@@ -36,33 +36,16 @@ const SpellingProgress = ({ timeRemaining, showWarning }: SpellingProgressProps)
     <div className="space-y-1.5">
       {/* Fixed-width container that never changes size */}
       <div className="relative w-full h-6 rounded-full overflow-hidden shadow-sm">
-        {/* Static background - always full width */}
-        <div className="absolute inset-0 w-full h-full transition-colors duration-300 rounded-full bg-gradient-to-r" 
-          style={{ 
+        {/* Dynamic progress bar that changes color based on time */}
+        <div 
+          className="absolute inset-0 w-full h-full transition-colors duration-300 rounded-full bg-gradient-to-r"
+          style={{
             backgroundImage: timeRemaining <= 5 
               ? 'linear-gradient(to right, #FDF2F8, #FCE7F3)' 
               : timeRemaining <= 15 
                 ? 'linear-gradient(to right, #FFFBEB, #FEF3C7)' 
                 : 'linear-gradient(to right, #ECFDF5, #D1FAE5)'
           }}>
-        </div>
-        
-        {/* Dynamic progress bar that changes width based on time */}
-        <div 
-          className="absolute top-0 left-0 h-full transition-all duration-300 rounded-full bg-gradient-to-r"
-          style={{
-            width: `${Math.max((timeRemaining/30)*100, 0)}%`,
-            backgroundImage: timeRemaining <= 5 
-              ? 'linear-gradient(to right, #F9A8D4, #EC4899)' 
-              : timeRemaining <= 15 
-                ? 'linear-gradient(to right, #FCD34D, #F59E0B)' 
-                : 'linear-gradient(to right, #34D399, #10B981)'
-          }}
-        >
-          {/* Pulse animation only when time is running low */}
-          {timeRemaining <= 10 && (
-            <div className="absolute inset-0 bg-opacity-75 animate-pulse"></div>
-          )}
         </div>
         
         {/* Stars that float up as time passes (decorative) */}
