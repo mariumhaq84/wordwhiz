@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Language, WordList } from '@/types/word';
-import { IceCream, Sparkles } from 'lucide-react';
+import { IceCream, Sparkles, Globe } from 'lucide-react';
 
 interface WordListUploadProps {
   onUpload: (list: WordList) => void;
   defaultLanguage?: Language;
 }
 
-const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploadProps) => {
+const WordListUpload = ({ onUpload, defaultLanguage = 'urdu' }: WordListUploadProps) => {
   const [loading, setLoading] = useState(false);
+  const [selectedLanguage] = useState<Language>(defaultLanguage);
 
   // Predefined English spelling words from the Spellathon 2024-2025 Class 3 image
   const predefinedEnglishWords = [
@@ -24,30 +25,52 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploa
     "flight", "companion"
   ];
 
+  // Predefined Urdu spelling words
+  const predefinedUrduWords = [
+    "عبادت", "تلاش", "عبادت", "مہمان",
+    "استقبال", "عادت", "گھڑی", "دعا",
+    "ظاہر", "راستہ", "ایمان", "مزاج",
+    "خاموش", "طبیعت", "حیران", "لکڑی",
+    "سجدہ", "ڈانٹ", "آسمان", "سورج",
+    "طلوع", "بھوک", "صحابہ کرام", "صفت",
+    "ناراض", "تکلیف", "حالت", "خرگوش",
+    "چیونٹی", "جھوٹ", "تعلق", "کانپنا",
+    "ہجری", "جفاکش", "ترقی", "اعداد",
+    "فلک", "اعتبار", "جوڑنا", "ارمان",
+    "پریشانی", "مسکین", "آہستہ", "گیند",
+    "خوشبودار", "کوشش", "مثال", "جاندار",
+    "میدان", "درہم", "برداشت"
+  ];
+
   const handleLoadPredefinedList = () => {
     setLoading(true);
     
     try {
+      // Select the appropriate word list based on language
+      const wordList = selectedLanguage === 'urdu' 
+        ? predefinedUrduWords 
+        : predefinedEnglishWords;
+      
       // Create word list with predefined words and shuffle them
-      const shuffledWords = [...predefinedEnglishWords].sort(() => Math.random() - 0.5);
+      const shuffledWords = [...wordList].sort(() => Math.random() - 0.5);
       
       const words = shuffledWords.map((word, index) => ({
         id: `${index}`,
         text: word,
         pronunciation: word,
-        language: 'english' as Language,
+        language: selectedLanguage,
       }));
 
-      const wordList: WordList = {
+      const wordListObj: WordList = {
         id: Date.now().toString(),
-        name: "Spellathon 2024-2025 Class 3",
-        language: 'english' as Language,
+        name: selectedLanguage === 'urdu' ? "Urdu Spelling Practice" : "English Spelling Practice",
+        language: selectedLanguage,
         words,
       };
 
-      onUpload(wordList);
+      onUpload(wordListObj);
     } catch (error) {
-      console.error("Failed to load predefined English word list", error);
+      console.error(`Failed to load predefined ${selectedLanguage} word list`, error);
     } finally {
       setLoading(false);
     }
@@ -59,24 +82,30 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploa
     'bg-green-50', 'bg-orange-50', 'bg-indigo-50', 'bg-red-50'
   ];
 
+  // Get the current word list based on selected language
+  const currentWordList = selectedLanguage === 'urdu' ? predefinedUrduWords : predefinedEnglishWords;
+
   return (
     <Card className="p-3 max-w-md mx-auto bg-white/90 backdrop-blur shadow-xl rounded-2xl">
-      <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent text-center">
-        Start Spelling Practice!
+      <h2 className="text-xl font-bold mb-2 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent text-center font-urdu">
+        ہجے کی مشق شروع کریں!
       </h2>
 
       <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
         <div className="mb-3">
           <div className="rounded-lg border-2 border-blue-300 overflow-hidden shadow-md">
             <div className="grid grid-cols-4 gap-[2px] bg-blue-200 p-[2px] rounded-md">
-              {predefinedEnglishWords.map((word, index) => (
+              {currentWordList.map((word, index) => (
                 <div 
                   key={index} 
                   className={`p-2 ${kidFriendlyColors[index % kidFriendlyColors.length]} 
                     flex items-center justify-center text-center rounded-md 
-                    border border-blue-100 hover:scale-105 transition-transform duration-200`}
+                    border border-blue-100 hover:scale-105 transition-transform duration-200
+                    ${selectedLanguage === 'urdu' ? 'font-urdu-container' : ''}`}
                 >
-                  <span className="text-blue-900 text-sm font-medium kid-friendly">{word}</span>
+                  <span className={`text-blue-900 text-sm font-medium kid-friendly ${selectedLanguage === 'urdu' ? 'font-urdu' : ''}`}>
+                    {word}
+                  </span>
                 </div>
               ))}
             </div>
@@ -89,7 +118,7 @@ const WordListUpload = ({ onUpload, defaultLanguage = 'english' }: WordListUploa
           disabled={loading}
         >
           <IceCream className="h-5 w-5" />
-          {loading ? "Loading..." : "Let's Start Practicing English!"}
+          {loading ? "لوڈ ہو رہا ہے..." : "آئیے مشق شروع کریں!"}
         </Button>
       </div>
     </Card>
