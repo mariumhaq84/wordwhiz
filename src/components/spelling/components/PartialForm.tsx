@@ -2,6 +2,7 @@ import React, { FormEvent, KeyboardEvent, RefObject, useState } from 'react';
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import UrduKeyboard from '../UrduKeyboard';
+import ArabicKeyboard from '../ArabicKeyboard';
 import { Keyboard } from 'lucide-react';
 import { toast } from 'sonner';
 import SubmitButton from './SubmitButton';
@@ -222,6 +223,28 @@ const PartialForm = ({
     }
   }, [isRTL, blankIndices, inputRefs]);
 
+  // Determine which keyboard to show based on language
+  const getKeyboard = () => {
+    if (word.language === 'urdu') {
+      return (
+        <UrduKeyboard 
+          onKeyPress={handleKeyPress} 
+          onBackspace={handleBackspace}
+          className="mb-4 keyboard-animate-in" 
+        />
+      );
+    } else if (word.language === 'arabic') {
+      return (
+        <ArabicKeyboard 
+          onKeyPress={handleKeyPress} 
+          onBackspace={handleBackspace}
+          className="mb-4 keyboard-animate-in" 
+        />
+      );
+    }
+    return null;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className={`flex justify-center items-center flex-wrap gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -279,17 +302,11 @@ const PartialForm = ({
         )}
       </div>
 
-      {isRTL && showKeyboard && (
-        <UrduKeyboard 
-          onKeyPress={handleKeyPress} 
-          onBackspace={handleBackspace}
-          className="mb-4 keyboard-animate-in" 
-        />
-      )}
+      {isRTL && showKeyboard && getKeyboard()}
       
       <SubmitButton 
         isCorrect={isCorrect} 
-        isRTL={isRTL} 
+        language={word.language}
         colorScheme={colorScheme}
       />
     </form>

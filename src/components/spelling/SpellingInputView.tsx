@@ -35,6 +35,30 @@ const SpellingInputView = ({
   // Determine if we need RTL direction
   const isRTL = word.language === 'urdu' || word.language === 'arabic';
   
+  // Language-specific text
+  const getInstructionText = () => {
+    switch (word.language) {
+      case 'urdu':
+        return "پورا لفظ ٹائپ کریں!";
+      case 'arabic':
+        return "اكتب الكلمة كاملة!";
+      default:
+        return "Type the whole word!";
+    }
+  };
+  
+  // Font classes based on language
+  const getFontClass = () => {
+    switch (word.language) {
+      case 'urdu':
+        return 'font-urdu';
+      case 'arabic':
+        return 'font-arabic';
+      default:
+        return '';
+    }
+  };
+  
   // Debug RTL cursor positioning when word changes
   useEffect(() => {
     if (isRTL) {
@@ -46,8 +70,8 @@ const SpellingInputView = ({
     <div className="space-y-4">
       <div className="flex items-center justify-center gap-2 bg-white/80 rounded-full px-3 py-1.5 shadow-sm border border-emerald-100 mx-auto w-fit">
         <Pencil className="h-4 w-4 text-emerald-500" />
-        <div className={`text-sm font-medium ${isRTL ? 'font-urdu' : ''} text-emerald-700`}>
-          {isRTL ? "پورا لفظ ٹائپ کریں!" : "Type the whole word!"}
+        <div className={`text-sm font-medium ${isRTL ? getFontClass() : ''} text-emerald-700`}>
+          {getInstructionText()}
         </div>
       </div>
       

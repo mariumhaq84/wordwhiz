@@ -39,6 +39,30 @@ const SpellingPartialView = ({
   const [autoCheck, setAutoCheck] = useState(true);
   const isRTL = word.language === 'urdu' || word.language === 'arabic';
   
+  // Language-specific text
+  const getInstructionText = () => {
+    switch (word.language) {
+      case 'urdu':
+        return "خالی جگہوں کو پُر کریں!";
+      case 'arabic':
+        return "املأ الفراغات!";
+      default:
+        return "Fill in the missing letters!";
+    }
+  };
+  
+  // Font classes based on language
+  const getFontClass = () => {
+    switch (word.language) {
+      case 'urdu':
+        return 'font-urdu';
+      case 'arabic':
+        return 'font-arabic';
+      default:
+        return '';
+    }
+  };
+  
   // Log changes to blanksAttempt for RTL languages
   React.useEffect(() => {
     if (isRTL) {
@@ -50,8 +74,8 @@ const SpellingPartialView = ({
     <div className="space-y-4">
       <div className="flex items-center justify-center gap-2 bg-white/80 rounded-full px-3 py-1.5 shadow-sm border border-amber-100 mx-auto w-fit">
         <Sparkles className="h-4 w-4 text-amber-500" />
-        <div className={`text-sm font-medium ${isRTL ? 'font-urdu' : ''} text-amber-700`}>
-          {isRTL ? "خالی جگہوں کو پُر کریں!" : "Fill in the missing letters!"}
+        <div className={`text-sm font-medium ${isRTL ? getFontClass() : ''} text-amber-700`}>
+          {getInstructionText()}
         </div>
       </div>
       

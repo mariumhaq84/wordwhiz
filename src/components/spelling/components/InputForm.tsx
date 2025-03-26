@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Keyboard } from 'lucide-react';
 import UrduKeyboard from '../UrduKeyboard';
+import ArabicKeyboard from '../ArabicKeyboard';
 import { toast } from 'sonner';
 import SubmitButton from './SubmitButton';
 import KeyboardToggle from './KeyboardToggle';
@@ -37,6 +38,7 @@ const InputForm = ({
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   
+  // Determine if we need RTL direction
   const isRTL = word.language === 'urdu' || word.language === 'arabic';
 
   const handleSubmit = (e: FormEvent) => {
@@ -129,6 +131,28 @@ const InputForm = ({
     setFocusedIndex(index);
   };
 
+  // Determine which keyboard to show based on language
+  const getKeyboard = () => {
+    if (word.language === 'urdu') {
+      return (
+        <UrduKeyboard 
+          onKeyPress={handleKeyPress} 
+          onBackspace={handleBackspace}
+          className="mb-4 keyboard-animate-in" 
+        />
+      );
+    } else if (word.language === 'arabic') {
+      return (
+        <ArabicKeyboard 
+          onKeyPress={handleKeyPress} 
+          onBackspace={handleBackspace}
+          className="mb-4 keyboard-animate-in" 
+        />
+      );
+    }
+    return null;
+  };
+
   React.useEffect(() => {
     if (isRTL && focusedIndex !== null && !showKeyboard) {
       toast.info(
@@ -177,17 +201,11 @@ const InputForm = ({
         )}
       </div>
       
-      {isRTL && showKeyboard && (
-        <UrduKeyboard 
-          onKeyPress={handleKeyPress} 
-          onBackspace={handleBackspace}
-          className="mb-4 keyboard-animate-in" 
-        />
-      )}
+      {isRTL && showKeyboard && getKeyboard()}
       
       <SubmitButton 
         isCorrect={isCorrect} 
-        isRTL={isRTL} 
+        language={word.language}
         colorScheme={colorScheme}
       />
     </form>

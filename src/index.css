@@ -184,6 +184,63 @@
       background-color: rgba(239, 68, 68, 0.2); /* red-500 with opacity */
     }
   }
+  
+  /* Keyboard animations */
+  .keyboard-animate-in {
+    animation: slide-in-bottom 0.3s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+  }
+
+  @keyframes slide-in-bottom {
+    0% {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Keyboard key animations */
+  .urdu-keyboard-key:active,
+  .arabic-keyboard-key:active {
+    transform: translateY(2px);
+    transition: transform 0.1s;
+  }
+
+  @keyframes pulse-highlight {
+    0% {
+      box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(147, 51, 234, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(147, 51, 234, 0);
+    }
+  }
+
+  /* Arabic keyboard specific styles */
+  .arabic-keyboard-key {
+    font-family: 'Noto Arabic', 'Scheherazade New', 'Traditional Arabic', Arial, sans-serif;
+  }
+
+  .arabic-keyboard-key:active {
+    transform: translateY(2px);
+    transition: transform 0.1s;
+  }
+
+  @keyframes arabic-pulse-highlight {
+    0% {
+      box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 6px rgba(20, 184, 166, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+    }
+  }
 }
 
 /* Add Urdu font support */
