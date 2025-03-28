@@ -1,4 +1,3 @@
-
 import React, { KeyboardEvent, RefObject, useEffect } from 'react';
 import CharacterInput from '../CharacterInput';
 
@@ -32,7 +31,7 @@ const CharacterInputGrid = ({
   // For RTL languages, start from the right (last character)
   const startIndex = isRTL ? word.text.length - 1 : 0;
 
-  // Ensure correct RTL focus for Urdu when component mounts or word changes
+  // Ensure correct RTL focus for RTL languages when component mounts or word changes
   useEffect(() => {
     if (isRTL && letterInputRefs.current && !isCorrect) {
       const timeoutId = setTimeout(() => {
@@ -46,30 +45,91 @@ const CharacterInputGrid = ({
     }
   }, [isRTL, letterInputRefs, startIndex, isCorrect, word.text]);
 
+  // Create an array of indices based on the word's character count
+  const indices = Array.from({ length: word.text.length }, (_, i) => i);
+  
+  // For RTL languages, reverse the order of indices so characters are displayed right-to-left
+  const displayIndices = isRTL ? [...indices].reverse() : indices;
+
+  // Helper to determine position (start, middle, end) for RTL cursor handling
+  const getPosition = (index: number): 'start' | 'middle' | 'end' => {
+    if (word.text.length === 1) return 'start';
+    
+    if (isRTL) {
+      if (index === word.text.length - 1) return 'start';
+      if (index === 0) return 'end';
+      return 'middle';
+    } else {
+      if (index === 0) return 'start';
+      if (index === word.text.length - 1) return 'end';
+      return 'middle';
+    }
+  };
+
   return (
     <div className="space-y-4">
-      <div className={`flex justify-center items-center flex-wrap gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-        {word.text.split('').map((_, index) => (
-          <div key={index} className="text-center">
-            <CharacterInput
-              value={letterAttempts[index] || ''}
-              onChange={(value) => handleInputChange(index, value)}
-              onKeyDown={(e) => handleLetterKeyDown(index, e)}
-              onFocus={() => handleInputFocus(index)}
-              isCorrect={isCorrect}
-              isRTL={isRTL}
-              inputRef={el => {
-                if (letterInputRefs.current) {
-                  letterInputRefs.current[index] = el;
-                }
-              }}
-              autoFocus={index === startIndex}
-              disabled={isCorrect}
-              colorScheme={colorScheme}
-            />
+      {isRTL ? (
+        // RTL-specific container with explicit RTL settings
+        <div className="rtl-container" dir="rtl" style={{ direction: 'rtl', unicodeBidi: 'bidi-override' }}>
+          <div className="flex justify-center items-center flex-wrap gap-3">
+            {/* Map through the indices in the original order for data binding */}
+            {indices.map(index => {
+              // Find the display position for this logical index
+              const displayPosition = displayIndices.indexOf(index);
+              
+              return (
+                <div key={index} 
+                     className="text-center" 
+                     style={{ order: displayPosition }} // Use order to control visual positioning
+                >
+                  <CharacterInput
+                    value={letterAttempts[index] || ''}
+                    onChange={(value) => handleInputChange(index, value)}
+                    onKeyDown={(e) => handleLetterKeyDown(index, e)}
+                    onFocus={() => handleInputFocus(index)}
+                    isCorrect={isCorrect}
+                    isRTL={isRTL}
+                    inputRef={el => {
+                      if (letterInputRefs.current) {
+                        letterInputRefs.current[index] = el;
+                      }
+                    }}
+                    autoFocus={index === startIndex}
+                    disabled={isCorrect}
+                    colorScheme={colorScheme}
+                    position={getPosition(index)}
+                  />
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        // LTR standard layout
+        <div className="flex justify-center items-center flex-wrap gap-3">
+          {word.text.split('').map((_, index) => (
+            <div key={index} className="text-center">
+              <CharacterInput
+                value={letterAttempts[index] || ''}
+                onChange={(value) => handleInputChange(index, value)}
+                onKeyDown={(e) => handleLetterKeyDown(index, e)}
+                onFocus={() => handleInputFocus(index)}
+                isCorrect={isCorrect}
+                isRTL={isRTL}
+                inputRef={el => {
+                  if (letterInputRefs.current) {
+                    letterInputRefs.current[index] = el;
+                  }
+                }}
+                autoFocus={index === startIndex}
+                disabled={isCorrect}
+                colorScheme={colorScheme}
+                position={getPosition(index)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,4 @@
-
-import React, { KeyboardEvent, RefObject, useEffect, useRef } from 'react';
+import React, { KeyboardEvent, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 
 interface CharacterInputProps {
@@ -12,7 +11,8 @@ interface CharacterInputProps {
   inputRef: (element: HTMLInputElement | null) => void;
   autoFocus?: boolean;
   disabled?: boolean;
-  colorScheme?: 'green' | 'amber'; // For different color schemes
+  colorScheme?: 'green' | 'amber';
+  position?: 'start' | 'middle' | 'end'; // Position in the word
 }
 
 const CharacterInput = ({ 
@@ -25,7 +25,8 @@ const CharacterInput = ({
   inputRef,
   autoFocus = false,
   disabled = false,
-  colorScheme = 'green'
+  colorScheme = 'green',
+  position
 }: CharacterInputProps) => {
   const baseClasses = "w-14 h-14 text-center text-xl font-bold rounded-lg shadow-sm focus:ring-2 transition-all p-0";
   
@@ -49,100 +50,103 @@ const CharacterInput = ({
   
   const selectedStyle = colorStyles[colorScheme];
   
-  // Internal ref to track if we need to update cursor position
-  const needsCursorUpdateRef = useRef(false);
-  
-  // Enhanced input change handler with proper RTL support
+  // Simple ref for the input element
+  const internalInputRef = useRef<HTMLInputElement | null>(null);
+
+  // Handle changes with simplified logic
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    
-    // Debug log to check what's being received
-    if (isRTL) {
-      console.log(`RTL input received: "${newValue}" (length: ${newValue.length})`);
-      needsCursorUpdateRef.current = true;
-    }
-    
-    // For both RTL and LTR, always take the last character entered
-    // This is the most consistent approach as it works well with IMEs and
-    // ensures correct behavior when multiple characters are entered at once
     if (newValue.length > 0) {
+      // Always just use the last character typed
       const lastCharacter = newValue.charAt(newValue.length - 1);
       onChange(lastCharacter);
     } else {
-      // Empty input case
       onChange('');
     }
   };
-  
-  // Improved cursor positioning for RTL inputs - run after every render
+
+  // Apply RTL configuration on mount
   useEffect(() => {
+    if (!internalInputRef.current) return;
+    
+    const input = internalInputRef.current;
+    
     if (isRTL) {
-      const input = document.activeElement as HTMLInputElement;
-      // Only update if this input is focused and needs cursor positioning
-      if (input && input === document.getElementById(`rtl-input-${value}`) && needsCursorUpdateRef.current) {
-        // For RTL, always position cursor at the beginning (right side)
-        setTimeout(() => {
-          try {
-            // Position at beginning (0,0) for RTL - appears at right edge
-            input.setSelectionRange(0, 0);
-            console.log("Set RTL cursor position to beginning (right side)");
-            needsCursorUpdateRef.current = false;
-          } catch (e) {
-            console.log("Error setting RTL selection range:", e);
-          }
-        }, 10);
-      }
+      // Apply more aggressive RTL styling for Arabic
+      input.setAttribute('dir', 'rtl');
+      input.style.direction = 'rtl';
+      input.style.textAlign = 'center';
+      
+      // Force the bidirectional override
+      input.style.unicodeBidi = 'bidi-override';
+      
+      // Wait a bit then force selection to the beginning (right side in RTL)
+      const timeoutId = setTimeout(() => {
+        if (document.activeElement === input) {
+          input.setSelectionRange(0, 0);
+        }
+      }, 50);
+      
+      return () => clearTimeout(timeoutId);
+    } else {
+      // Normal LTR styling
+      input.setAttribute('dir', 'ltr');
+      input.style.direction = 'ltr';
+      input.style.textAlign = 'center';
     }
-  });
+  }, [isRTL, value]);
   
-  // Set up cursor position on focus for RTL inputs
-  const handleRTLFocus = () => {
+  // Focus handler
+  const handleFocus = () => {
+    if (!internalInputRef.current) return;
+    
+    const input = internalInputRef.current;
+    
+    // For RTL inputs, position cursor at start (which is on the right)
     if (isRTL) {
-      const input = document.activeElement as HTMLInputElement;
-      if (input && input.setSelectionRange) {
-        // Mark that we need cursor positioning
-        needsCursorUpdateRef.current = true;
-        
-        // Position cursor at the beginning (right side) for RTL inputs
-        setTimeout(() => {
-          try {
-            input.setSelectionRange(0, 0);
-            console.log("RTL input focused, cursor positioned at beginning (right side)");
-          } catch (e) {
-            console.log("Error setting RTL focus position:", e);
-          }
-        }, 10);
-      }
+      setTimeout(() => {
+        if (document.activeElement === input) {
+          input.setSelectionRange(0, 0);
+        }
+      }, 50);
     }
     
-    // Call the original onFocus handler
+    // Call the provided focus handler
     onFocus();
+  };
+  
+  // Manage combined ref
+  const combinedRef = (el: HTMLInputElement | null) => {
+    internalInputRef.current = el;
+    inputRef(el);
   };
   
   return (
     <div className="relative transform transition-all hover:scale-105">
       <Input
-        id={`rtl-input-${value}`}
         value={value}
         onChange={handleChange}
         onKeyDown={onKeyDown}
-        onFocus={handleRTLFocus}
-        className={`${baseClasses} border-3 ${selectedStyle.border} ${selectedStyle.bg} ${selectedStyle.ring} ${isRTL ? 'font-urdu kid-friendly rtl' : 'kid-friendly'}`}
+        onFocus={handleFocus}
+        className={`${baseClasses} border-3 ${selectedStyle.border} ${selectedStyle.bg} ${selectedStyle.ring} ${isRTL ? 'font-arabic rtl-input' : ''}`}
         maxLength={1}
-        ref={inputRef}
+        ref={combinedRef}
         autoFocus={autoFocus}
         disabled={disabled}
         dir={isRTL ? 'rtl' : 'ltr'}
         style={{ 
           textAlign: 'center',
-          color: isRTL ? selectedStyle.textColor : undefined,
+          color: selectedStyle.textColor,
           fontSize: isRTL ? '1.8em' : undefined,
           fontWeight: isRTL ? '600' : undefined,
-          caretColor: isRTL ? '#065F46' : undefined, // Enhanced caret visibility for RTL
-          boxShadow: isCorrect ? '0 0 15px rgba(34, 197, 94, 0.5)' : undefined
+          direction: isRTL ? 'rtl' : 'ltr',
+          boxShadow: isCorrect ? '0 0 15px rgba(34, 197, 94, 0.5)' : undefined,
+          unicodeBidi: isRTL ? 'bidi-override' : undefined,
         }}
-        // Force right-to-left text input when in RTL mode
-        inputMode={isRTL ? "text" : undefined}
+        // Force text input mode
+        inputMode="text"
+        data-rtl={isRTL ? "true" : "false"}
+        data-position={position || ""}
       />
       <div className={`absolute -bottom-1 left-0 w-full h-1.5 ${selectedStyle.underline} rounded-full`}></div>
       
